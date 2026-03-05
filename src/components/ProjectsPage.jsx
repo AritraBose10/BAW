@@ -297,7 +297,7 @@ export default function ProjectsPage() {
                             <div className="flex flex-col justify-center ml-4 pl-2">
                                 <div className="flex text-[10px] text-primary">
                                     {[...Array(5)].map((_, i) => (
-                                        <span key={i} className="material-symbols-outlined text-xs">star</span>
+                                        <span key={i} className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                                     ))}
                                 </div>
                                 <div className="text-[10px] text-text-secondary font-medium">From 150+ reviews</div>

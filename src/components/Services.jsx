@@ -42,18 +42,21 @@ export default function Services() {
         });
 
         tl.fromTo('.service-heading',
-            { y: 30, opacity: 0 },
-            { y: 0, opacity: 1, stagger: 0.1 }
+            { y: 40, opacity: 0 },
+            { y: 0, opacity: 1, stagger: 0.1, duration: 1, ease: 'power3.out' }
         )
             .fromTo('.service-card',
-                { y: 50, opacity: 0 },
-                { y: 0, opacity: 1, stagger: 0.15 },
-                '-=0.4'
+                { y: 50, opacity: 0, scale: 0.95, rotateX: 3 },
+                {
+                    y: 0, opacity: 1, scale: 1, rotateX: 0,
+                    stagger: 0.12, duration: 0.9, ease: 'power3.out'
+                },
+                '-=0.6'
             )
             .fromTo('.service-image',
-                { scale: 0.9, opacity: 0 },
-                { scale: 1, opacity: 1 },
-                '-=0.6'
+                { scale: 0.85, opacity: 0, rotateY: -5 },
+                { scale: 1, opacity: 1, rotateY: 0, duration: 1.2, ease: 'power3.out' },
+                '-=0.8'
             );
 
     }, { scope: containerRef });
@@ -75,7 +78,7 @@ export default function Services() {
                             {services.map((service) => (
                                 <div
                                     key={service.id}
-                                    className="service-card bg-white rounded-2xl p-5 border border-gray-100 shadow-subtle hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 group"
+                                    className="service-card bg-white rounded-2xl p-5 border border-gray-100 shadow-subtle hover-lift hover-glow transition-all duration-300 group"
                                 >
                                     <div className="flex items-start gap-4">
                                         <span className="w-10 h-10 rounded-xl flex-shrink-0 bg-primary/5 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300">

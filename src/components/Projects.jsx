@@ -15,17 +15,22 @@ export default function Projects() {
             }
         });
 
-        tl.from('.proj-heading', { y: 30, opacity: 0, duration: 0.8 });
+        tl.from('.proj-heading', { y: 50, opacity: 0, duration: 1, ease: 'power3.out' });
 
-        gsap.utils.toArray('.proj-card').forEach((card) => {
+        gsap.utils.toArray('.proj-card').forEach((card, i) => {
             gsap.from(card, {
                 scrollTrigger: {
                     trigger: card,
-                    start: "top 85%",
+                    start: "top 88%",
                     toggleActions: "play none none reverse"
                 },
-                y: 60,
-                opacity: 0
+                y: 80,
+                opacity: 0,
+                scale: 0.95,
+                rotateX: 4,
+                duration: 1,
+                delay: i * 0.1,
+                ease: 'power3.out'
             });
         });
 
@@ -42,7 +47,7 @@ export default function Projects() {
                     <h2 className="proj-heading text-[36px] font-semibold text-primary tracking-[-0.02em]">Here's what<br />the momentum looks like.</h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 gap-y-14">
-                    <div className="proj-card group cursor-pointer">
+                    <div className="proj-card group cursor-pointer perspective-container">
                         <div className="flex justify-between items-end mb-4 px-1">
                             <div>
                                 <h3 className="font-bold text-lg text-primary mb-2">Atlas Technologies</h3>
@@ -55,11 +60,11 @@ export default function Projects() {
                                 <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
                             </span>
                         </div>
-                        <div className="bg-[#111] rounded-[24px] overflow-hidden aspect-[4/3] relative border border-border-light shadow-sm flex items-center justify-center p-8">
+                        <div className="bg-[#111] rounded-[24px] overflow-hidden aspect-[4/3] relative border border-border-light shadow-sm flex items-center justify-center p-8 img-parallax">
                             <img loading="lazy" alt="Atlas project" className="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDyi-beGxR5mWboq4-97RO9e00l98NzhA0hl_LG0gxQFGybNMLKDR67-6MW0_dnmBb28Y-XJ1ayvygepHh6r13UaRkOqoqe7V8bjpdW_YIvzqvZZgnd3RJFtrc1sUrsbLTCVJ6tsEBLItmVJ0scECR2FqQUB7WNTNOQ1DPxFvBnhrYVWIx7BPKYGWJxQg8hfLzvk5V_0hBczuFXfIGXw7vywsRZb8stRtVLd1OcpcgIWie3fsh9oycWhIvitk8eaRoEmwslTjssns" />
                         </div>
                     </div>
-                    <div className="proj-card group cursor-pointer md:mt-16">
+                    <div className="proj-card group cursor-pointer md:mt-16 perspective-container">
                         <div className="flex justify-between items-end mb-4 px-1">
                             <div>
                                 <h3 className="font-bold text-lg text-primary mb-2">Finlytics</h3>
@@ -82,7 +87,7 @@ export default function Projects() {
                             </div>
                         </div>
                     </div>
-                    <div className="proj-card group cursor-pointer">
+                    <div className="proj-card group cursor-pointer perspective-container">
                         <div className="flex justify-between items-end mb-4 px-1">
                             <div>
                                 <h3 className="font-bold text-lg text-primary mb-2">Orbital Bank</h3>
@@ -95,14 +100,14 @@ export default function Projects() {
                                 <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
                             </span>
                         </div>
-                        <div className="bg-[#568233] rounded-[24px] overflow-hidden aspect-[4/3] relative border border-border-light shadow-sm flex items-center justify-center p-0">
+                        <div className="bg-[#568233] rounded-[24px] overflow-hidden aspect-[4/3] relative border border-border-light shadow-sm flex items-center justify-center p-0 img-parallax">
                             <img loading="lazy" alt="Orbital Bank project" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnxbAQWjD_cxfIH-N2iB6j46lCxKB35EdqBDTAJ-QEAedGvTh433C3kXuPdUrdgSePKW4G32G1BxiFmbXypdm2SzPtwc1LMEM2QtwEAkA5ESgmFnX9utdbIN9E6CFNSIjYdI9ZoXdeCmJGmCEYAOwNgZFUolfo4pdpcfd4v7cVHlq1SSpfd8LStEJ3J4kURVeDnIUFVzfXIdefynvDmUXkEpc-IQSQc57YGHyznjaCGyps2_THpnCyhg1aQHGYEG3cYSeFnQjfwGU" />
                             <div className="absolute inset-0 flex items-center justify-center">
                                 <h4 className="text-[64px] font-thin text-white/20 tracking-[0.5em] w-full text-center">ORBITAL</h4>
                             </div>
                         </div>
                     </div>
-                    <div className="proj-card group cursor-pointer md:mt-16">
+                    <div className="proj-card group cursor-pointer md:mt-16 perspective-container">
                         <div className="flex justify-between items-end mb-4 px-1">
                             <div>
                                 <h3 className="font-bold text-lg text-primary mb-2">Echo Analytics</h3>

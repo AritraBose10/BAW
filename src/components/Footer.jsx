@@ -15,16 +15,30 @@ export default function Footer() {
             }
         });
 
-        tl.from('.footer-content', { y: 30, opacity: 0, duration: 0.8, stagger: 0.1 });
+        tl.from('.footer-content', {
+            y: 40,
+            opacity: 0,
+            duration: 0.9,
+            stagger: 0.08,
+            ease: 'power3.out'
+        });
 
-        gsap.from('.footer-logo', {
+        // Parallax scrub on the giant "Lamosa." text — slides up as you scroll
+        gsap.fromTo('.footer-logo h1', {
+            y: 120,
+            opacity: 0,
+            scale: 0.9,
+        }, {
+            y: 0,
+            opacity: 1,
+            scale: 1,
             scrollTrigger: {
                 trigger: '.footer-logo',
-                start: "top 95%",
-                toggleActions: "play none none reverse"
+                start: "top 100%",
+                end: "top 60%",
+                scrub: 1,
             },
-            y: 100,
-            opacity: 0
+            ease: 'none',
         });
 
     }, { scope: footerRef });

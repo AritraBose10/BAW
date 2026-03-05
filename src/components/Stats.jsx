@@ -57,13 +57,15 @@ export default function Stats() {
             }
         );
 
-        // Cards staggered reveal
+        // Cards staggered reveal with 3D rotation
         gsap.fromTo('.stat-card',
-            { y: 80, autoAlpha: 0 },
+            { y: 80, autoAlpha: 0, rotateX: 6, scale: 0.92 },
             {
                 y: 0,
                 autoAlpha: 1,
-                duration: 0.8,
+                rotateX: 0,
+                scale: 1,
+                duration: 1,
                 stagger: 0.15,
                 ease: 'power3.out',
                 scrollTrigger: {
@@ -154,7 +156,7 @@ export default function Stats() {
                     {stats.map((stat, i) => (
                         <div
                             key={i}
-                            className="stat-card group relative bg-background rounded-2xl p-7 border border-transparent hover:border-border-light hover:bg-white hover:shadow-subtle transition-all duration-500 overflow-hidden"
+                            className="stat-card group relative bg-background rounded-2xl p-7 border border-transparent hover:border-border-light hover:bg-white hover:shadow-subtle transition-all duration-500 overflow-hidden hover-lift hover-glow perspective-container"
                         >
                             {/* Corner accent on hover */}
                             <div

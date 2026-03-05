@@ -15,9 +15,17 @@ export default function Testimonials() {
             }
         });
 
-        tl.from('.test-heading', { y: 30, opacity: 0 })
-            .from('.test-card', { y: 40, opacity: 0, stagger: 0.15 }, '-=0.4')
-            .from('.test-cta', { scale: 0.95, opacity: 0 }, '-=0.6');
+        tl.from('.test-heading', { y: 50, opacity: 0, duration: 1, ease: 'power3.out' })
+            .from('.test-card', {
+                y: 60,
+                opacity: 0,
+                scale: 0.92,
+                rotateY: 5,
+                stagger: 0.12,
+                duration: 0.9,
+                ease: 'power3.out'
+            }, '-=0.6')
+            .from('.test-cta', { scale: 0.9, opacity: 0, y: 30, duration: 0.8, ease: 'power3.out' }, '-=0.4');
 
     }, { scope: containerRef });
 
@@ -32,7 +40,7 @@ export default function Testimonials() {
                     <h2 className="test-heading text-[36px] font-semibold text-primary tracking-[-0.02em]">We're loved.<br />Just success stories.</h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div className="test-card bg-white p-7 rounded-2xl border border-border-light shadow-subtle h-full flex flex-col justify-between">
+                    <div className="test-card bg-white p-7 rounded-2xl border border-border-light shadow-subtle h-full flex flex-col justify-between hover-lift hover-glow">
                         <div>
                             <div className="flex justify-between items-start mb-4">
                                 <div>
@@ -52,7 +60,7 @@ export default function Testimonials() {
                             <div className="ml-auto opacity-20"><span className="material-symbols-outlined text-[20px]">verified</span></div>
                         </div>
                     </div>
-                    <div className="test-card bg-white p-7 rounded-2xl border border-border-light shadow-subtle h-full flex flex-col justify-between">
+                    <div className="test-card bg-white p-7 rounded-2xl border border-border-light shadow-subtle h-full flex flex-col justify-between hover-lift hover-glow">
                         <div>
                             <div className="flex justify-between items-start mb-4">
                                 <div>
@@ -72,7 +80,7 @@ export default function Testimonials() {
                             <div className="ml-auto opacity-20"><span className="material-symbols-outlined text-[20px]">verified</span></div>
                         </div>
                     </div>
-                    <div className="test-card bg-white p-7 rounded-2xl border border-border-light shadow-subtle h-full flex flex-col justify-between">
+                    <div className="test-card bg-white p-7 rounded-2xl border border-border-light shadow-subtle h-full flex flex-col justify-between hover-lift hover-glow">
                         <div>
                             <div className="flex justify-between items-start mb-4">
                                 <div>
@@ -92,7 +100,7 @@ export default function Testimonials() {
                             <div className="ml-auto opacity-20"><span className="material-symbols-outlined text-[20px]">verified</span></div>
                         </div>
                     </div>
-                    <div className="test-card bg-white p-7 rounded-2xl border border-border-light shadow-subtle h-full flex flex-col justify-between">
+                    <div className="test-card bg-white p-7 rounded-2xl border border-border-light shadow-subtle h-full flex flex-col justify-between hover-lift hover-glow">
                         <div>
                             <div className="flex justify-between items-start mb-4">
                                 <div>
@@ -113,7 +121,7 @@ export default function Testimonials() {
                         </div>
                     </div>
                 </div>
-                <div className="test-cta bg-primary rounded-2xl p-10 md:p-12 relative overflow-hidden group text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-6 max-w-4xl mx-auto mt-12 shadow-2xl">
+                <div className="test-cta bg-primary rounded-2xl p-10 md:p-12 relative overflow-hidden group text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-6 max-w-4xl mx-auto mt-12 shadow-2xl hover:shadow-[0_40px_80px_-15px_rgba(0,0,0,0.3)] transition-all duration-500 hover:-translate-y-1">
                     <div className="absolute right-0 bottom-0 w-[300px] h-[300px] bg-white/5 rounded-full blur-[100px] translate-x-1/3 translate-y-1/3"></div>
                     <div className="relative z-10 text-white max-w-xl">
                         <p className="text-[14px] font-medium mb-2 text-gray-400">You focus on your company.</p>

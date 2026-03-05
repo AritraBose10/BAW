@@ -1,10 +1,44 @@
 import { Link } from 'react-router-dom';
+import { useRef } from 'react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 
 export default function Pricing() {
+    const containerRef = useRef(null);
+
+    useGSAP(() => {
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: containerRef.current,
+                start: "top 75%",
+                toggleActions: "play none none reverse"
+            }
+        });
+
+        tl.from('.pricing-heading', { y: 50, opacity: 0, duration: 1, ease: 'power3.out' })
+            .from('.pricing-card', {
+                y: 60,
+                opacity: 0,
+                scale: 0.92,
+                rotateX: 4,
+                stagger: 0.15,
+                duration: 1,
+                ease: 'power3.out'
+            }, '-=0.5')
+            .from('.pricing-cta', {
+                y: 40,
+                opacity: 0,
+                scale: 0.95,
+                duration: 0.8,
+                ease: 'back.out(1.7)'
+            }, '-=0.3');
+
+    }, { scope: containerRef });
+
     return (
-        <section className="py-20 bg-background border-t border-border-light">
+        <section ref={containerRef} className="py-20 bg-background border-t border-border-light">
             <div className="max-w-screen-xl mx-auto px-6">
-                <div className="text-center mb-14">
+                <div className="pricing-heading text-center mb-14">
                     <div className="flex items-center justify-center gap-2 mb-4">
                         <span id="waypoint-pricing" className="w-1.5 h-1.5 rounded-full bg-accent-new"></span>
                         <span className="text-[10px] font-bold uppercase text-text-secondary tracking-widest">Pricing</span>
@@ -13,7 +47,7 @@ export default function Pricing() {
                     <p className="mt-4 text-[15px] text-text-secondary">Flexible plans designed to accelerate growth,<br />with solutions that evolve as your business scales.</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
-                    <div className="bg-background p-6 rounded-2xl border border-transparent hover:bg-white hover:border-border-light hover:shadow-subtle transition-all duration-300 flex flex-col h-full group">
+                    <div className="pricing-card bg-background p-6 rounded-2xl border border-transparent hover:bg-white hover:border-border-light hover:shadow-subtle transition-all duration-300 flex flex-col h-full group hover-lift perspective-container">
                         <div className="w-9 h-9 rounded border border-border-light flex items-center justify-center text-text-primary mb-5 bg-white">
                             <span className="material-symbols-outlined text-[18px]">architecture</span>
                         </div>
@@ -31,7 +65,7 @@ export default function Pricing() {
                         </ul>
                         <a className="w-full block text-center bg-primary hover:bg-primary-hover text-white py-2.5 rounded-pill text-[12px] font-bold transition-colors" href="#">Get Started Now <span className="ml-1">→</span></a>
                     </div>
-                    <div className="bg-white p-6 rounded-2xl border border-border-light shadow-xl flex flex-col h-full relative overflow-hidden transform md:-translate-y-3">
+                    <div className="pricing-card bg-white p-6 rounded-2xl border border-border-light shadow-xl flex flex-col h-full relative overflow-hidden transform md:-translate-y-3 hover-glow perspective-container">
                         <div id="waypoint-pricing-popular" className="absolute top-0 right-0 bg-primary text-white text-[9px] px-3 py-1 rounded-bl-lg font-bold tracking-wider">POPULAR</div>
                         <div className="w-9 h-9 rounded border border-border-light flex items-center justify-center text-text-primary mb-5 bg-background">
                             <span className="material-symbols-outlined text-[18px]">diamond</span>
@@ -57,7 +91,7 @@ export default function Pricing() {
                             </div>
                         </div>
                     </div>
-                    <div className="bg-primary text-white p-6 rounded-2xl border border-gray-800 flex flex-col h-full relative">
+                    <div className="pricing-card bg-primary text-white p-6 rounded-2xl border border-gray-800 flex flex-col h-full relative hover:shadow-[0_30px_60px_-12px_rgba(0,0,0,0.4)] transition-all duration-500 perspective-container">
                         <div className="w-9 h-9 rounded border border-white/20 flex items-center justify-center text-white mb-5 bg-white/10">
                             <span className="material-symbols-outlined text-[18px]">stars</span>
                         </div>
@@ -80,7 +114,7 @@ export default function Pricing() {
                         <a className="w-full block text-center bg-white text-primary hover:bg-gray-100 py-2.5 rounded-pill text-[12px] font-bold transition-colors" href="#">Get Started Now <span className="ml-1">→</span></a>
                     </div>
                 </div>
-                <div className="mt-12 bg-white rounded-2xl p-7 border border-border-light flex flex-col md:flex-row items-center justify-between gap-6 max-w-4xl mx-auto shadow-subtle">
+                <div className="pricing-cta mt-12 bg-white rounded-2xl p-7 border border-border-light flex flex-col md:flex-row items-center justify-between gap-6 max-w-4xl mx-auto shadow-subtle hover-lift hover-glow">
                     <div>
                         <h3 className="text-lg font-bold text-primary mb-1">Can't decide yet?</h3>
                         <p className="text-[14px] font-bold text-primary mb-1">Let's have a free call.</p>

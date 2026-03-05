@@ -1,288 +1,144 @@
-import { useRef, useEffect } from 'react';
-import { useLenis } from 'lenis/react';
+import { useRef, useEffect, useCallback, useState } from 'react';
 import gsap from 'gsap';
 
-// ─── Meaningful Waypoints ───────────────────────────────
-const WAYPOINTS = [
-    '#waypoint-hero',
-    '#waypoint-stats',
-    '#waypoint-services',
-    '#waypoint-projects',
-    '#waypoint-process',
-    '#waypoint-testimonials',
-    '#waypoint-pricing',
-    '#waypoint-faq',
-    '#waypoint-blog',
-    '#waypoint-footer',
+// ─── Primary section waypoints the dot will travel between ─────
+const WAYPOINT_IDS = [
+    'waypoint-hero',
+    'waypoint-stats',
+    'waypoint-services',
+    'waypoint-projects',
+    'waypoint-process',
+    'waypoint-testimonials',
+    'waypoint-pricing',
+    'waypoint-faq',
+    'waypoint-blog',
+    'waypoint-footer',
 ];
 
-const DOCK_PAUSE_MS = 2000;
-
 export default function ScrollTraveler() {
-    const travelerRef = useRef(null);
-    const stateRef = useRef({
-        nextDockIdx: 0,
-        lastDockedIdx: -1,
-        isLocked: false,
-        prevScrollY: 0,
-        points: [],
-        initialized: false,
-    });
+    const trackRef = useRef(null);
+    const dotRef = useRef(null);
+    const nodeRefs = useRef([]);
+    const [activeIndex, setActiveIndex] = useState(-1);
+    const dataRef = useRef({ raf: null, observer: null, resizeTimer: null });
 
-    // Get the Lenis instance from context
-    const lenisRef = useRef(null);
-    useLenis((lenis) => {
-        lenisRef.current = lenis;
-    });
+    // ─── Compute which waypoint is "active" based on scroll ─────
+    const update = useCallback(() => {
+        const scrollY = window.scrollY || window.pageYOffset;
+        const vh = window.innerHeight;
+        // Threshold: the top 40% of viewport decides the "active" section
+        const triggerLine = scrollY + vh * 0.4;
+
+        let bestIdx = -1;
+
+        for (let i = 0; i < WAYPOINT_IDS.length; i++) {
+            const el = document.getElementById(WAYPOINT_IDS[i]);
+            if (!el) continue;
+
+            const rect = el.getBoundingClientRect();
+            const absY = rect.top + scrollY;
+
+            if (triggerLine >= absY) {
+                bestIdx = i;
+            }
+        }
+
+        // Always show if we've scrolled at all
+        if (scrollY > 50 && bestIdx === -1) bestIdx = 0;
+
+        setActiveIndex(bestIdx);
+
+        // Position the dot at the active node
+        if (bestIdx >= 0 && dotRef.current && nodeRefs.current[bestIdx]) {
+            const nodeEl = nodeRefs.current[bestIdx];
+            const trackEl = trackRef.current;
+            if (!nodeEl || !trackEl) return;
+
+            const trackRect = trackEl.getBoundingClientRect();
+            const nodeRect = nodeEl.getBoundingClientRect();
+
+            // Get center of node relative to track container
+            const y = nodeRect.top - trackRect.top + nodeRect.height / 2;
+
+            gsap.to(dotRef.current, {
+                y: y,
+                duration: 0.5,
+                ease: 'power3.out',
+                overwrite: true,
+            });
+        }
+    }, []);
+
+    // ─── RAF loop for smooth tracking ─────────────────────────
+    const tick = useCallback(() => {
+        update();
+        dataRef.current.raf = requestAnimationFrame(tick);
+    }, [update]);
 
     useEffect(() => {
-        const initTimer = setTimeout(() => {
-            if (!travelerRef.current) return;
+        // Start the loop after a short delay for lazy content to load
+        const start = setTimeout(() => {
+            dataRef.current.raf = requestAnimationFrame(tick);
 
-            // ─── Gather elements ───
-            const elements = [];
-            for (const sel of WAYPOINTS) {
-                const el = document.querySelector(sel);
-                if (el) elements.push(el);
-            }
-            if (elements.length < 2) return;
-
-            // ─── Measure ───
-            const sy = window.scrollY || 0;
-            const vh = window.innerHeight;
-
-            const points = elements.map(el => {
-                const r = el.getBoundingClientRect();
-                const cs = window.getComputedStyle(el);
-                return {
-                    el,
-                    centerX: r.left + r.width / 2,
-                    centerY: r.top + sy + r.height / 2,
-                    width: r.width,
-                    height: r.height,
-                    bg: cs.backgroundColor,
-                    radius: cs.borderRadius,
-                    triggerScroll: Math.max(0, (r.top + sy + r.height / 2) - vh / 2),
-                };
+            // Watch for DOM changes (lazy-loaded sections)
+            const observer = new MutationObserver(() => {
+                clearTimeout(dataRef.current.resizeTimer);
+                dataRef.current.resizeTimer = setTimeout(update, 100);
             });
+            observer.observe(document.body, { childList: true, subtree: true });
+            dataRef.current.observer = observer;
 
-            stateRef.current.points = points;
-
-            // ─── Hide originals ───
-            points.forEach(p => gsap.set(p.el, { visibility: 'hidden' }));
-
-            // ─── Initial dot ───
-            const first = points[0];
-            gsap.set(travelerRef.current, {
-                position: 'fixed',
-                left: first.centerX - first.width / 2,
-                top: first.centerY - sy - first.height / 2,
-                width: first.width,
-                height: first.height,
-                backgroundColor: first.bg,
-                borderRadius: first.radius,
-                zIndex: 9999,
-                pointerEvents: 'none',
-                opacity: 1,
-            });
-
-            // ─── Helper: clamp Y to viewport ───
-            const clampY = (y) => Math.max(vh * 0.1, Math.min(vh * 0.9, y));
-
-            // ─── Helper: get viewport-relative Y ───
-            const getVpY = (pt) => {
-                const scrollY = window.scrollY || 0;
-                return clampY(pt.centerY - scrollY);
-            };
-
-            // ─── DOCK ───
-            const dockAt = (idx, callback) => {
-                const s = stateRef.current;
-                const pt = s.points[idx];
-                if (!pt || s.isLocked) { callback?.(); return; }
-
-                s.isLocked = true;
-
-                const lenis = lenisRef.current;
-
-                // 1. INSTANTLY snap scroll to anchor position (no smooth animation!)
-                //    This prevents the dot from visually overshooting during a smooth scroll.
-                if (lenis) {
-                    lenis.scrollTo(pt.triggerScroll, { immediate: true });
-                } else {
-                    window.scrollTo({ top: pt.triggerScroll, behavior: 'instant' });
-                }
-
-                // 2. IMMEDIATELY position the dot on the anchor
-                const vpY = clampY(pt.centerY - pt.triggerScroll);
-                gsap.set(travelerRef.current, {
-                    left: pt.centerX - pt.width / 2,
-                    top: vpY - pt.height / 2,
-                    width: pt.width,
-                    height: pt.height,
-                    backgroundColor: pt.bg,
-                    borderRadius: pt.radius,
-                    overwrite: true,
-                });
-
-                // 3. Now freeze Lenis
-                if (lenis) lenis.stop();
-
-                // 4. Proceed to pulse + pause
-                finishDock(pt, callback);
-            };
-
-            const finishDock = (pt, callback) => {
-                const lenis = lenisRef.current;
-
-                // Gentle pulse animation during dock
-                gsap.fromTo(travelerRef.current,
-                    { scale: 1 },
-                    {
-                        scale: 2,
-                        duration: 0.3,
-                        yoyo: true,
-                        repeat: 2,
-                        ease: 'sine.inOut',
-                        delay: 0.1,
-                    }
-                );
-
-                // After pause, smoothly resume
-                setTimeout(() => {
-                    if (lenis) lenis.start();
-                    stateRef.current.isLocked = false;
-                    callback?.();
-                }, DOCK_PAUSE_MS);
-            };
-
-            // ─── Tracking between anchors ───
-            const updateDotPosition = (scrollY) => {
-                const s = stateRef.current;
-                if (s.isLocked || s.points.length === 0) return;
-
-                const pts = s.points;
-
-                // Find which two anchors we're between
-                let prevIdx = 0;
-                for (let i = 0; i < pts.length; i++) {
-                    if (scrollY >= pts[i].triggerScroll) prevIdx = i;
-                }
-                const nxtIdx = Math.min(prevIdx + 1, pts.length - 1);
-                const prev = pts[prevIdx];
-                const next = pts[nxtIdx];
-
-                if (prevIdx === nxtIdx) {
-                    const vpY = clampY(prev.centerY - scrollY);
-                    gsap.set(travelerRef.current, {
-                        left: prev.centerX - prev.width / 2,
-                        top: vpY - prev.height / 2,
-                    });
-                    return;
-                }
-
-                // Progress
-                const range = next.triggerScroll - prev.triggerScroll;
-                const progress = range > 0
-                    ? Math.max(0, Math.min(1, (scrollY - prev.triggerScroll) / range))
-                    : 0;
-
-                // Interpolate position
-                const x = prev.centerX + (next.centerX - prev.centerX) * progress;
-                const w = prev.width + (next.width - prev.width) * progress;
-                const h = prev.height + (next.height - prev.height) * progress;
-
-                const prevVpY = clampY(prev.centerY - scrollY);
-                const nextVpY = clampY(next.centerY - scrollY);
-                const y = prevVpY + (nextVpY - prevVpY) * progress;
-                const clampedY = clampY(y);
-
-                gsap.set(travelerRef.current, {
-                    left: x - w / 2,
-                    top: clampedY - h / 2,
-                    width: w,
-                    height: h,
-                });
-            };
-
-            // ─── Scroll handler ───
-            const onScroll = () => {
-                const s = stateRef.current;
-                if (s.isLocked) return;
-
-                const currentScrollY = window.scrollY;
-                const scrollDirection = currentScrollY >= s.prevScrollY ? 1 : -1;
-
-                if (scrollDirection === 1) {
-                    if (s.nextDockIdx < s.points.length) {
-                        const target = s.points[s.nextDockIdx];
-                        if (currentScrollY >= target.triggerScroll - 100) {
-                            const idx = s.nextDockIdx;
-                            s.nextDockIdx++;
-                            s.lastDockedIdx = idx;
-                            dockAt(idx, () => { });
-                            return;
-                        }
-                    }
-                } else {
-                    if (s.lastDockedIdx > 0) {
-                        const prevAnchor = s.points[s.lastDockedIdx - 1];
-                        if (currentScrollY <= prevAnchor.triggerScroll + 100) {
-                            const idx = s.lastDockedIdx - 1;
-                            s.lastDockedIdx = idx;
-                            s.nextDockIdx = idx + 1;
-                            dockAt(idx, () => { });
-                            return;
-                        }
-                    }
-                }
-
-                updateDotPosition(currentScrollY);
-                s.prevScrollY = currentScrollY;
-            };
-
-            // ─── Listen ───
-            let ticking = false;
-            const scrollListener = () => {
-                if (!ticking) {
-                    requestAnimationFrame(() => {
-                        onScroll();
-                        ticking = false;
-                    });
-                    ticking = true;
-                }
-            };
-
-            window.addEventListener('scroll', scrollListener, { passive: true });
-            stateRef.current.initialized = true;
-
-            // ─── Initial dock ───
-            setTimeout(() => {
-                if (stateRef.current.nextDockIdx === 0) {
-                    dockAt(0, () => {
-                        stateRef.current.nextDockIdx = 1;
-                        stateRef.current.lastDockedIdx = 0;
-                    });
-                }
-            }, 500);
-
-            return () => {
-                window.removeEventListener('scroll', scrollListener);
-                stateRef.current.isLocked = false;
-                const lenis = lenisRef.current;
-                if (lenis) lenis.start(); // Ensure Lenis is running on cleanup
-                points.forEach(p => gsap.set(p.el, { visibility: 'visible' }));
-            };
+            window.addEventListener('resize', update, { passive: true });
         }, 800);
 
-        return () => clearTimeout(initTimer);
-    }, []);
+        return () => {
+            clearTimeout(start);
+            clearTimeout(dataRef.current.resizeTimer);
+            if (dataRef.current.raf) cancelAnimationFrame(dataRef.current.raf);
+            if (dataRef.current.observer) dataRef.current.observer.disconnect();
+            window.removeEventListener('resize', update);
+        };
+    }, [tick, update]);
+
+    // Show/hide based on scroll
+    const isVisible = activeIndex >= 0;
 
     return (
         <div
-            ref={travelerRef}
-            className="pointer-events-none rounded-full"
-            style={{ position: 'fixed', opacity: 0 }}
-        />
+            ref={trackRef}
+            className={`fixed right-3 top-1/2 -translate-y-1/2 z-[60] hidden lg:flex flex-col items-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}
+            style={{ gap: '0px' }}
+        >
+            {/* Vertical track line */}
+            <div className="absolute top-0 bottom-0 w-px bg-gray-200/60 left-1/2 -translate-x-1/2" />
+
+            {/* Traveling dot - positioned absolutely, animated with GSAP */}
+            <div
+                ref={dotRef}
+                className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-accent-new z-10"
+                style={{
+                    boxShadow: '0 0 12px rgba(48, 79, 255, 0.5), 0 0 4px rgba(48, 79, 255, 0.3)',
+                    top: 0,
+                }}
+            />
+
+            {/* Node markers for each section */}
+            {WAYPOINT_IDS.map((id, i) => (
+                <div
+                    key={id}
+                    ref={el => nodeRefs.current[i] = el}
+                    className={`relative w-2 h-2 rounded-full transition-all duration-300 z-[5] ${activeIndex === i
+                        ? 'bg-accent-new scale-150'
+                        : activeIndex > i
+                            ? 'bg-gray-300 scale-100'
+                            : 'bg-gray-200 scale-75'
+                        }`}
+                    style={{
+                        margin: '10px 0',
+                    }}
+                    title={id.replace('waypoint-', '').replace(/-/g, ' ')}
+                />
+            ))}
+        </div>
     );
 }

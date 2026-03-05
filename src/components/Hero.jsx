@@ -186,6 +186,11 @@ export default function Hero() {
 
     return (
         <section ref={containerRef} className="pt-[120px] pb-[48px] relative overflow-hidden min-h-[85vh] flex flex-col justify-center">
+            {/* Floating Gradient Orbs */}
+            <div className="gradient-orb gradient-orb-1 top-[10%] left-[-5%] z-[1]"></div>
+            <div className="gradient-orb gradient-orb-2 top-[60%] right-[-8%] z-[1]"></div>
+            <div className="gradient-orb gradient-orb-3 bottom-[-10%] left-[30%] z-[1]"></div>
+
             {/* Gradient Mask */}
             <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#F8F8F8] to-transparent z-30 pointer-events-none"></div>
             <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#F8F8F8] to-transparent z-30 pointer-events-none"></div>
@@ -261,16 +266,16 @@ export default function Hero() {
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-12 relative z-50">
                     <Link
-                        className="hero-btn bg-primary hover:bg-black text-white px-6 py-2.5 rounded-full font-medium transition-all flex items-center gap-2.5 text-[13px] shadow-[0_20px_50px_-5px_rgba(0,0,0,0.5)] hover:shadow-[0_25px_60px_-5px_rgba(0,0,0,0.6)] hover:-translate-y-0.5 group relative z-50"
+                        className="hero-btn bg-primary hover:bg-black text-white px-6 py-2.5 rounded-full font-medium transition-all duration-300 flex items-center gap-2.5 text-[13px] shadow-[0_20px_50px_-5px_rgba(0,0,0,0.5)] hover:shadow-[0_25px_60px_-5px_rgba(0,0,0,0.6)] hover:-translate-y-1 hover:scale-[1.02] group relative z-50 animate-pulse-glow"
                         to="/contact"
                     >
                         Book A Call
-                        <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center border border-white/10 group-hover:bg-white/30 transition-colors">
+                        <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center border border-white/10 group-hover:bg-white/30 group-hover:rotate-[-45deg] transition-all duration-300">
                             <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
                         </span>
                     </Link>
                     <Link
-                        className="hero-btn bg-white hover:bg-gray-50 text-primary px-6 py-3 rounded-full font-semibold transition-all border border-gray-200 shadow-sm hover:shadow-md text-[13px] hover:-translate-y-0.5 relative z-50"
+                        className="hero-btn bg-white hover:bg-gray-50 text-primary px-6 py-3 rounded-full font-semibold transition-all duration-300 border border-gray-200 shadow-sm hover:shadow-lg text-[13px] hover:-translate-y-1 hover:scale-[1.02] hover:border-gray-300 relative z-50 gradient-border"
                         to="/projects"
                     >
                         View Projects
@@ -280,12 +285,17 @@ export default function Hero() {
                 {/* Social Proof */}
                 <div className="hero-social flex items-center justify-center gap-4 mb-16">
                     <div className="flex -space-x-3">
-                        {[1, 2, 3, 4].map((_, i) => (
+                        {[
+                            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
+                            'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face',
+                            'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
+                            'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face'
+                        ].map((src, i) => (
                             <div key={i} className="w-7 h-7 rounded-full border-[3px] border-white overflow-hidden bg-gray-200">
                                 <img
-                                    alt={`User ${i}`}
+                                    alt={`Client ${i + 1}`}
                                     className="w-full h-full object-cover"
-                                    src={`https://lh3.googleusercontent.com/aida-public/AB6AXu${['B2jVeNYOpZW', 'CyycclS', 'AZTBq0PnAdLP', 'D6vpP0D7'][i] || 'B2jVeNYOpZW'}...`}
+                                    src={src}
                                 />
                             </div>
                         ))}
@@ -293,7 +303,7 @@ export default function Hero() {
                     <div className="flex flex-col items-start leading-none gap-1">
                         <div className="flex text-primary text-[11px] gap-0.5">
                             {[1, 2, 3, 4, 5].map((_, i) => (
-                                <span key={i} className="material-symbols-outlined text-[13px] fill-current">star</span>
+                                <span key={i} className="material-symbols-outlined text-[13px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                             ))}
                         </div>
                         <span className="text-[11px] text-gray-500 font-medium">From 150+ reviews</span>
@@ -301,7 +311,7 @@ export default function Hero() {
                 </div>
 
                 {/* Project Card */}
-                <div className="hero-project bg-white rounded-[20px] p-5 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.06)] border border-gray-100 overflow-hidden relative w-[65vw] mx-auto">
+                <div className="hero-project bg-white rounded-[20px] p-5 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.06)] border border-gray-100 overflow-hidden relative w-[65vw] mx-auto hover-glow transition-all duration-500">
                     <div className="flex justify-between items-center mb-4">
                         <div className="flex items-center gap-5">
                             <h3 className="font-bold text-base text-gray-900 tracking-tight">{projects[currentProject].name}</h3>
@@ -327,12 +337,7 @@ export default function Hero() {
                 </div>
             </div>
 
-            {/* Fixed Bottom Right Widget */}
-            <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 pointer-events-none">
-                <a href="#" className="pointer-events-auto bg-white text-black px-3 py-1.5 rounded-[8px] font-bold text-[11px] shadow-lg border border-gray-100 flex items-center gap-1.5 hover:bg-gray-50 transition-colors">
-                    <span className="material-symbols-outlined text-[14px]">diamond</span> Made in Framer
-                </a>
-            </div>
+
         </section>
     );
 }

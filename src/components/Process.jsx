@@ -14,8 +14,16 @@ export default function Process() {
             }
         });
 
-        tl.from('.process-heading', { y: 30, opacity: 0 })
-            .from('.process-step', { y: 50, opacity: 0, stagger: 0.2 }, '-=0.4');
+        tl.from('.process-heading', { y: 50, opacity: 0, duration: 1, ease: 'power3.out' })
+            .from('.process-step', {
+                x: -60,
+                y: 30,
+                opacity: 0,
+                scale: 0.95,
+                stagger: 0.18,
+                duration: 0.9,
+                ease: 'power3.out'
+            }, '-=0.5');
 
     }, { scope: containerRef });
 
@@ -32,7 +40,7 @@ export default function Process() {
                         </p>
                     </div>
                     <div className="lg:col-span-7 space-y-3">
-                        <div className="process-step bg-white rounded-2xl p-7 border border-border-light flex gap-6 relative shadow-subtle hover:shadow-lg transition-shadow">
+                        <div className="process-step bg-white rounded-2xl p-7 border border-border-light flex gap-6 relative shadow-subtle hover-lift hover-glow transition-all duration-400">
                             <span className="text-xs font-mono text-text-secondary absolute top-7 left-6 md:static mt-1">01</span>
                             <div>
                                 <h3 className="text-lg font-bold text-primary mb-2">Discovery & Strategy</h3>
@@ -41,7 +49,7 @@ export default function Process() {
                                 </p>
                             </div>
                         </div>
-                        <div className="process-step bg-white rounded-2xl p-7 border border-border-light flex gap-6 relative shadow-subtle hover:shadow-lg transition-shadow">
+                        <div className="process-step bg-white rounded-2xl p-7 border border-border-light flex gap-6 relative shadow-subtle hover-lift hover-glow transition-all duration-400">
                             <span className="text-xs font-mono text-text-secondary absolute top-7 left-6 md:static mt-1">02</span>
                             <div>
                                 <h3 className="text-lg font-bold text-primary mb-2">Development & Launch</h3>
@@ -50,7 +58,7 @@ export default function Process() {
                                 </p>
                             </div>
                         </div>
-                        <div className="process-step bg-white rounded-2xl p-7 border border-border-light flex gap-6 relative shadow-subtle hover:shadow-lg transition-shadow">
+                        <div className="process-step bg-white rounded-2xl p-7 border border-border-light flex gap-6 relative shadow-subtle hover-lift hover-glow transition-all duration-400">
                             <span className="text-xs font-mono text-text-secondary absolute top-7 left-6 md:static mt-1">03</span>
                             <div>
                                 <h3 className="text-lg font-bold text-primary mb-2">Optimization & Scale</h3>
