@@ -124,12 +124,12 @@ export default function Stats() {
     }, { scope: sectionRef });
 
     return (
-        <section ref={sectionRef} className="py-160 bg-white overflow-hidden">
+        <section ref={sectionRef} className="py-20 bg-white overflow-hidden">
             <div className="max-w-screen-xl mx-auto px-6">
 
                 {/* Heading */}
-                <div className="stats-heading text-center mb-20 relative">
-                    <div id="waypoint-stats" className="w-2 h-2 bg-accent-new rounded-full mx-auto mb-6"></div>
+                <div className="stats-heading text-center mb-14 relative">
+                    <div id="waypoint-stats" className="w-1.5 h-1.5 bg-accent-new rounded-full mx-auto mb-4"></div>
 
                     {/* Watermark */}
                     <span
@@ -140,11 +140,11 @@ export default function Stats() {
                         ∞
                     </span>
 
-                    <h2 className="text-h2 font-semibold text-primary mb-4 leading-tight relative z-10">
+                    <h2 className="text-[36px] font-semibold text-primary mb-3 leading-tight tracking-[-0.02em] relative z-10">
                         Lamosa makes it simple,<br />
                         and delivers results<span id="waypoint-stats-period" className="inline-block">.</span>
                     </h2>
-                    <p className="text-[16px] text-text-secondary max-w-md mx-auto leading-relaxed relative z-10">
+                    <p className="text-[15px] text-text-secondary max-w-md mx-auto leading-relaxed relative z-10">
                         Numbers that speak louder than words. Real results, real clients, real growth.
                     </p>
                 </div>
@@ -154,7 +154,7 @@ export default function Stats() {
                     {stats.map((stat, i) => (
                         <div
                             key={i}
-                            className="stat-card group relative bg-background rounded-card p-10 border border-transparent hover:border-border-light hover:bg-white hover:shadow-subtle transition-all duration-500 overflow-hidden"
+                            className="stat-card group relative bg-background rounded-2xl p-7 border border-transparent hover:border-border-light hover:bg-white hover:shadow-subtle transition-all duration-500 overflow-hidden"
                         >
                             {/* Corner accent on hover */}
                             <div
@@ -163,29 +163,29 @@ export default function Stats() {
                             />
 
                             {/* Icon */}
-                            <div className="stat-icon w-10 h-10 rounded-xl bg-white border border-border-light flex items-center justify-center mb-8 shadow-sm group-hover:shadow-md transition-shadow duration-300">
+                            <div className="stat-icon w-10 h-10 rounded-xl bg-white border border-border-light flex items-center justify-center mb-6 shadow-sm group-hover:shadow-md transition-shadow duration-300">
                                 <span className="material-symbols-outlined text-accent-new text-[20px]">{stat.icon}</span>
                             </div>
 
                             {/* Number */}
                             <div className="flex items-end gap-0.5 mb-2">
                                 {stat.prefix && (
-                                    <span className="text-[48px] font-bold text-primary leading-none tracking-tight">{stat.prefix}</span>
+                                    <span className="text-[36px] font-bold text-primary leading-none tracking-tight">{stat.prefix}</span>
                                 )}
                                 <span
-                                    className="stat-number text-[56px] font-bold text-primary leading-none tracking-tight tabular-nums"
+                                    className="stat-number text-[36px] font-bold text-primary leading-none tracking-tight tabular-nums"
                                     data-target={stat.value}
                                 >
                                     {stat.value}
                                 </span>
-                                <span className="text-[48px] font-bold text-accent-new leading-none tracking-tight">{stat.suffix}</span>
+                                <span className="text-[36px] font-bold text-accent-new leading-none tracking-tight">{stat.suffix}</span>
                             </div>
 
                             {/* Label */}
                             <p className="font-bold text-[15px] text-primary mb-3">{stat.label}</p>
 
                             {/* Progress bar */}
-                            <div className="h-px bg-border-light mb-5 overflow-hidden rounded-full">
+                            <div className="h-px bg-border-light mb-4 overflow-hidden rounded-full">
                                 <div
                                     className="stat-bar-fill h-full bg-accent-new rounded-full"
                                     style={{ width: stat.barWidth }}
@@ -199,7 +199,7 @@ export default function Stats() {
                 </div>
 
                 {/* Trust strip */}
-                <div className="mt-16 flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+                <div className="mt-14 flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
                     {['Y Combinator', 'Techstars', 'a16z', 'Sequoia', 'First Round'].map((name) => (
                         <span key={name} className="text-[12px] font-bold text-text-secondary uppercase tracking-widest opacity-40 hover:opacity-70 transition-opacity duration-300 cursor-default">
                             {name}

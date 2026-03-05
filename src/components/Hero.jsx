@@ -117,14 +117,12 @@ export default function Hero() {
     // Split testimonials for left/right conveyor belts
     const leftTestimonialsRaw = testimonials.filter((_, i) => i < 3);
     const rightTestimonialsRaw = testimonials.filter((_, i) => i >= 3);
-    // Duplicate for seamless looping
     const leftTestimonials = [...leftTestimonialsRaw, ...leftTestimonialsRaw];
     const rightTestimonials = [...rightTestimonialsRaw, ...rightTestimonialsRaw];
 
     useGSAP(() => {
         const tl = gsap.timeline();
 
-        // Entrance Animations (Main Content)
         tl.from('.hero-badge', { y: 20, opacity: 0, duration: 0.8, delay: 0.2 })
             .from('.hero-heading-line', { y: 50, opacity: 0, duration: 1, stagger: 0.15 }, '-=0.6')
             .from('.hero-subtitle', { y: 20, opacity: 0, duration: 0.8 }, '-=0.8')
@@ -136,7 +134,6 @@ export default function Hero() {
             .from('.hero-social', { y: 20, opacity: 0, duration: 0.8 }, '-=0.6')
             .from('.hero-project', { y: 40, opacity: 0, duration: 1 }, '-=0.6');
 
-        // Conveyor Belt Logic
         const speed = 0.04;
         const gap = 14;
 
@@ -165,48 +162,33 @@ export default function Hero() {
         const updateConveyor = () => {
             leftItems.forEach((el, i) => {
                 leftState[i].y -= speed;
-                if (leftState[i].y < 2) {
-                    leftState[i].y += (leftItems.length * gap);
-                }
+                if (leftState[i].y < 2) leftState[i].y += (leftItems.length * gap);
                 const { x, rot } = calculateLeft(leftState[i].y);
                 const dist = Math.abs(leftState[i].y - 30);
                 const opacity = 1 - Math.max(0, (dist - 15) / 10);
-                gsap.set(el, {
-                    top: `${leftState[i].y}%`,
-                    left: `${x}%`,
-                    rotation: rot,
-                    opacity: Math.max(0, opacity)
-                });
+                gsap.set(el, { top: `${leftState[i].y}%`, left: `${x}%`, rotation: rot, opacity: Math.max(0, opacity) });
             });
 
             rightItems.forEach((el, i) => {
                 rightState[i].y -= speed;
-                if (rightState[i].y < 4) {
-                    rightState[i].y += (rightItems.length * gap);
-                }
+                if (rightState[i].y < 4) rightState[i].y += (rightItems.length * gap);
                 const { x, rot } = calculateRight(rightState[i].y);
                 const dist = Math.abs(rightState[i].y - 32);
                 const opacity = 1 - Math.max(0, (dist - 15) / 10);
-                gsap.set(el, {
-                    top: `${rightState[i].y}%`,
-                    right: `${x}%`,
-                    rotation: rot,
-                    opacity: Math.max(0, opacity)
-                });
+                gsap.set(el, { top: `${rightState[i].y}%`, right: `${x}%`, rotation: rot, opacity: Math.max(0, opacity) });
             });
         };
 
         gsap.ticker.add(updateConveyor);
-
         return () => gsap.ticker.remove(updateConveyor);
 
     }, { scope: containerRef });
 
     return (
-        <section ref={containerRef} className="pt-[160px] pb-16 relative overflow-hidden min-h-[95vh] flex flex-col justify-center">
-            {/* Gradient Mask for Top/Bottom Fade Effect */}
-            <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#F8F8F8] to-transparent z-30 pointer-events-none"></div>
-            <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#F8F8F8] to-transparent z-30 pointer-events-none"></div>
+        <section ref={containerRef} className="pt-[120px] pb-[48px] relative overflow-hidden min-h-[85vh] flex flex-col justify-center">
+            {/* Gradient Mask */}
+            <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#F8F8F8] to-transparent z-30 pointer-events-none"></div>
+            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#F8F8F8] to-transparent z-30 pointer-events-none"></div>
 
             {/* Left Conveyor Belt */}
             {leftTestimonials.map((t, i) => (
@@ -215,12 +197,12 @@ export default function Hero() {
                     className="test-card-left absolute hidden xl:block z-10"
                     style={{ willChange: 'transform, top, left, opacity' }}
                 >
-                    <div className="bg-white p-4 rounded-[16px] shadow-[0_6px_24px_-4px_rgba(0,0,0,0.07)] max-w-[220px] transition-all duration-300">
-                        <div className="flex justify-between items-start gap-3 mb-3">
-                            <p className="text-[12px] text-gray-800 leading-relaxed font-normal flex-1">"{t.text}"</p>
-                            <span className="text-[20px] text-gray-300 font-serif leading-none flex-shrink-0">❞</span>
+                    <div className={`bg-white p-3 rounded-[12px] shadow-[0_6px_24px_-4px_rgba(0,0,0,0.07)] max-w-[200px] transform ${t.rotate} hover:scale-105 transition-all duration-300`}>
+                        <div className="flex justify-between items-start gap-2 mb-2">
+                            <p className="text-[11px] text-gray-800 leading-relaxed font-normal flex-1">"{t.text}"</p>
+                            <span className="text-[18px] text-gray-300 font-serif leading-none flex-shrink-0">❞</span>
                         </div>
-                        <p className="text-[12px] font-semibold text-gray-900">– {t.name}</p>
+                        <p className="text-[11px] font-semibold text-gray-900">– {t.name}</p>
                     </div>
                 </div>
             ))}
@@ -232,25 +214,25 @@ export default function Hero() {
                     className="test-card-right absolute hidden xl:block z-10"
                     style={{ willChange: 'transform, top, right, opacity' }}
                 >
-                    <div className="bg-white p-4 rounded-[16px] shadow-[0_6px_24px_-4px_rgba(0,0,0,0.07)] max-w-[220px] transition-all duration-300">
-                        <div className="flex justify-between items-start gap-3 mb-3">
-                            <p className="text-[12px] text-gray-800 leading-relaxed font-normal flex-1">"{t.text}"</p>
-                            <span className="text-[20px] text-gray-300 font-serif leading-none flex-shrink-0">❞</span>
+                    <div className={`bg-white p-3 rounded-[12px] shadow-[0_6px_24px_-4px_rgba(0,0,0,0.07)] max-w-[200px] transform ${t.rotate} hover:scale-105 transition-all duration-300`}>
+                        <div className="flex justify-between items-start gap-2 mb-2">
+                            <p className="text-[11px] text-gray-800 leading-relaxed font-normal flex-1">"{t.text}"</p>
+                            <span className="text-[18px] text-gray-300 font-serif leading-none flex-shrink-0">❞</span>
                         </div>
-                        <p className="text-[12px] font-semibold text-gray-900">– {t.name}</p>
+                        <p className="text-[11px] font-semibold text-gray-900">– {t.name}</p>
                     </div>
                 </div>
             ))}
 
             <div className="max-w-screen-xl mx-auto px-6 relative z-40 text-center">
-                {/* Open for Work Badge */}
-                <div className="hero-badge inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-gray-100 mb-8 shadow-sm">
+                {/* Badge */}
+                <div className="hero-badge inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-gray-100 mb-6 shadow-sm">
                     <span id="waypoint-hero" className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
                     <span className="text-[11px] font-bold text-gray-600 uppercase tracking-wider">Open to Work</span>
                 </div>
 
                 {/* Heading */}
-                <h1 className="text-[56px] leading-[1.05] font-bold tracking-tight mb-6 text-primary max-w-[760px] mx-auto">
+                <h1 className="text-[44px] leading-[1.05] font-bold tracking-tight mb-5 text-primary max-w-[640px] mx-auto">
                     <div className="hero-heading-line">
                         Web & Brand{' '}
                         <span className="font-pixel inline-block relative">
@@ -268,41 +250,38 @@ export default function Hero() {
                             </span>
                         </span>
                     </div>
-                    <div className="hero-heading-line font-['Playfair_Display'] italic font-normal text-[56px]">For Ambitious Founders</div>
+                    <div className="hero-heading-line font-['Playfair_Display'] italic font-normal text-[44px]">For Ambitious Founders</div>
                 </h1>
 
                 {/* Subtitle */}
-                <p className="hero-subtitle text-[16px] text-text-secondary mb-10 max-w-[480px] mx-auto leading-relaxed text-gray-500">
+                <p className="hero-subtitle text-[15px] text-text-secondary mb-8 max-w-[440px] mx-auto leading-relaxed text-gray-500">
                     We build conversion-driven websites and marketing that attract, engage, and convert.
                 </p>
 
                 {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 relative z-50">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-12 relative z-50">
                     <Link
-                        className="hero-btn bg-[#0A0A0A] hover:bg-black text-white pr-2 pl-6 py-2 rounded-full font-medium transition-all flex items-center gap-4 text-[15px] shadow-[0_15px_30px_-5px_rgba(0,0,0,0.6),0_8px_10px_-6px_rgba(0,0,0,1)] hover:shadow-[0_25px_50px_-10px_rgba(0,0,0,0.7),0_12px_20px_-8px_rgba(0,0,0,1)] hover:-translate-y-1 group border-t border-white/20 border-b-0 border-x border-white/5 relative z-50"
+                        className="hero-btn bg-primary hover:bg-black text-white px-6 py-2.5 rounded-full font-medium transition-all flex items-center gap-2.5 text-[13px] shadow-[0_20px_50px_-5px_rgba(0,0,0,0.5)] hover:shadow-[0_25px_60px_-5px_rgba(0,0,0,0.6)] hover:-translate-y-0.5 group relative z-50"
                         to="/contact"
                     >
                         Book A Call
-                        <span className="w-9 h-9 rounded-full bg-[#1F1F1F] flex items-center justify-center group-hover:bg-[#333] transition-colors border-t border-white/10 shadow-[inner_0_1px_0_0_rgba(255,255,255,0.1)]">
-                            <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                        <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center border border-white/10 group-hover:bg-white/30 transition-colors">
+                            <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
                         </span>
                     </Link>
                     <Link
-                        className="hero-btn bg-gray-50 hover:bg-gray-100 text-[#0A0A0A] pr-2 pl-6 py-2 rounded-full font-medium transition-all flex items-center gap-4 text-[15px] shadow-[0_15px_30px_-5px_rgba(0,0,0,0.15),0_8px_10px_-6px_rgba(0,0,0,0.1)] hover:shadow-[0_25px_50px_-10px_rgba(0,0,0,0.2),0_12px_20px_-8px_rgba(0,0,0,0.15)] hover:-translate-y-1 group border border-gray-200 relative z-50"
+                        className="hero-btn bg-white hover:bg-gray-50 text-primary px-6 py-3 rounded-full font-semibold transition-all border border-gray-200 shadow-sm hover:shadow-md text-[13px] hover:-translate-y-0.5 relative z-50"
                         to="/projects"
                     >
                         View Projects
-                        <span className="w-9 h-9 rounded-full bg-white flex items-center justify-center group-hover:bg-gray-50 transition-colors border border-gray-200 shadow-sm">
-                            <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-                        </span>
                     </Link>
                 </div>
 
                 {/* Social Proof */}
-                <div className="hero-social flex items-center justify-center gap-4 mb-24">
+                <div className="hero-social flex items-center justify-center gap-4 mb-16">
                     <div className="flex -space-x-3">
                         {[1, 2, 3, 4].map((_, i) => (
-                            <div key={i} className="w-8 h-8 rounded-full border-[3px] border-white overflow-hidden bg-gray-200">
+                            <div key={i} className="w-7 h-7 rounded-full border-[3px] border-white overflow-hidden bg-gray-200">
                                 <img
                                     alt={`User ${i}`}
                                     className="w-full h-full object-cover"
@@ -314,31 +293,28 @@ export default function Hero() {
                     <div className="flex flex-col items-start leading-none gap-1">
                         <div className="flex text-primary text-[11px] gap-0.5">
                             {[1, 2, 3, 4, 5].map((_, i) => (
-                                <span key={i} className="material-symbols-outlined text-[14px] fill-current">star</span>
+                                <span key={i} className="material-symbols-outlined text-[13px] fill-current">star</span>
                             ))}
                         </div>
                         <span className="text-[11px] text-gray-500 font-medium">From 150+ reviews</span>
                     </div>
                 </div>
 
-                {/* Project Card - Wide Layout with Rotating Images */}
-                <div className="hero-project bg-white rounded-[24px] p-6 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.06)] border border-gray-100 overflow-hidden relative w-[70vw] mx-auto">
-                    {/* Header Row */}
-                    <div className="flex justify-between items-center mb-5">
-                        <div className="flex items-center gap-6">
-                            <h3 className="font-bold text-lg text-gray-900 tracking-tight">{projects[currentProject].name}</h3>
+                {/* Project Card */}
+                <div className="hero-project bg-white rounded-[20px] p-5 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.06)] border border-gray-100 overflow-hidden relative w-[65vw] mx-auto">
+                    <div className="flex justify-between items-center mb-4">
+                        <div className="flex items-center gap-5">
+                            <h3 className="font-bold text-base text-gray-900 tracking-tight">{projects[currentProject].name}</h3>
                             <p className="text-gray-400 text-sm hidden sm:block">{projects[currentProject].stats}</p>
                         </div>
-                        <Link className="bg-white text-black pl-5 pr-2 py-1.5 rounded-full flex items-center gap-3 text-xs font-bold border border-gray-200 hover:bg-gray-50 transition-all hover:shadow-md" to="/projects">
+                        <Link className="bg-white text-black pl-4 pr-2 py-1.5 rounded-full flex items-center gap-2 text-xs font-bold border border-gray-200 hover:bg-gray-50 transition-all hover:shadow-md" to="/projects">
                             View Project
-                            <span className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center">
-                                <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                            <span className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
+                                <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
                             </span>
                         </Link>
                     </div>
-
-                    {/* Rotating Image */}
-                    <div className="rounded-[16px] overflow-hidden relative h-[340px] bg-gray-100">
+                    <div className="rounded-[12px] overflow-hidden relative h-[260px] bg-gray-100">
                         {projects.map((project, index) => (
                             <img
                                 key={index}
@@ -352,7 +328,7 @@ export default function Hero() {
             </div>
 
             {/* Fixed Bottom Right Widget */}
-            <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end gap-3 pointer-events-none">
+            <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 pointer-events-none">
                 <a href="#" className="pointer-events-auto bg-white text-black px-3 py-1.5 rounded-[8px] font-bold text-[11px] shadow-lg border border-gray-100 flex items-center gap-1.5 hover:bg-gray-50 transition-colors">
                     <span className="material-symbols-outlined text-[14px]">diamond</span> Made in Framer
                 </a>
